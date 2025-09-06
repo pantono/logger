@@ -1,0 +1,2 @@
+Logger:
+  class: Pantono\Logger\Logger
