@@ -20,7 +20,7 @@ class LoggerRepository extends MysqlRepository
 
     public function logHttpRequest(HttpRequestLog $log): void
     {
-        $id = $this->insertOrUpdateCheck('http_request_log', 'id', $log->getId(), $log->getAllData());
+        $id = $this->insertOrUpdateCheck('http_log', 'id', $log->getId(), $log->getAllData());
         if ($id) {
             $log->setId($id);
         }

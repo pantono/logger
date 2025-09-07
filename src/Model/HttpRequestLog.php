@@ -11,7 +11,7 @@ class HttpRequestLog
 
     private ?int $id = null;
     private \DateTimeInterface $dateStarted;
-    private ?\DateTimeInterface $dateFinished = null;
+    private ?\DateTimeInterface $dateCompleted = null;
     private ?string $service = null;
     private ?string $method = null;
     private ?string $uri = null;
@@ -46,14 +46,14 @@ class HttpRequestLog
         $this->dateStarted = $dateStarted;
     }
 
-    public function getDateFinished(): ?\DateTimeInterface
+    public function getDateCompleted(): ?\DateTimeInterface
     {
-        return $this->dateFinished;
+        return $this->dateCompleted;
     }
 
-    public function setDateFinished(?\DateTimeInterface $dateFinished): void
+    public function setDateCompleted(?\DateTimeInterface $dateCompleted): void
     {
-        $this->dateFinished = $dateFinished;
+        $this->dateCompleted = $dateCompleted;
     }
 
     public function getService(): ?string

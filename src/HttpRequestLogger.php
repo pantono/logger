@@ -69,7 +69,7 @@ class HttpRequestLogger implements LoggerInterface
             $error = $m['error'];
             $log = new HttpRequestLog();
             $log->setService($this->serviceName);
-            $log->setDateFinished(new \DateTime());
+            $log->setDateCompleted(new \DateTime());
             $log->setDateStarted(new \DateTime());
             $log->setResponseBody($response);
             $log->setRequestBody($request);
