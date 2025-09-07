@@ -3,6 +3,7 @@
 namespace Pantono\Logger\Repository;
 
 use Pantono\Database\Repository\MysqlRepository;
+use Pantono\Logger\Model\HttpRequestLog;
 
 class LoggerRepository extends MysqlRepository
 {
@@ -15,5 +16,13 @@ class LoggerRepository extends MysqlRepository
             'message' => $message,
             'context' => json_encode($context)
         ]);
+    }
+
+    public function logHttpRequest(HttpRequestLog $log): void
+    {
+        $id = $this->insertOrUpdateCheck('http_request_log', 'id', $log->getId(), $log->getAllData());
+        if ($id) {
+            $log->setId($id);
+        }
     }
 }

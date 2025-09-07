@@ -17,5 +17,22 @@ final class LoggerMigration extends AbstractMigration
             ->addIndex('date')
             ->addIndex('service')
             ->create();
+
+        $this->table('http_log')
+            ->addColumn('date_started', 'datetime')
+            ->addColumn('date_completed', 'datetime', ['null' => true])
+            ->addColumn('service', 'string')
+            ->addColumn('method', 'string', ['null' => true])
+            ->addColumn('uri', 'string', ['null' => true])
+            ->addColumn('request_headers', 'json', ['null' => true])
+            ->addColumn('request_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, null => true])
+            ->addColumn('response_code', 'integer', ['null' => true])
+            ->addColumn('response_headers', 'json', ['null' => true])
+            ->addColumn('response_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, 'null' => true])
+            ->addColumn('time_taken', 'float', ['null' => true])
+            ->addIndex('date')
+            ->addIndex('service')
+            ->addIndex('response_code')
+            ->create();
     }
 }

@@ -4,6 +4,10 @@ namespace Pantono\Logger;
 
 use Pantono\Logger\Repository\LoggerRepository;
 use Psr\Log\LoggerInterface;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Client;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\MessageFormatter;
 
 class Logger implements LoggerInterface
 {
@@ -17,6 +21,16 @@ class Logger implements LoggerInterface
     public function createLogger(string $serviceName): LoggerInstance
     {
         return new LoggerInstance($this->repository, $serviceName);
+    }
+
+    public function createLoggedHttpClient(string $serviceName): Client
+    {
+        $psrLog = new HttpRequestLogger($this->repository, $serviceName);
+
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::log($psrLog, new MessageFormatter(MessageFormatter::DEBUG)));
+
+        return new Client(['handler' => $stack]);
     }
 
     public function emergency(\Stringable|string $message, array $context = []): void
