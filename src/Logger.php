@@ -8,6 +8,9 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Promise\PromiseInterface;
+use Pantono\Logger\Model\HttpRequestLog;
 
 class Logger implements LoggerInterface
 {
@@ -25,10 +28,26 @@ class Logger implements LoggerInterface
 
     public function createLoggedHttpClient(string $serviceName): Client
     {
-        $psrLog = new HttpRequestLogger($this->repository, $serviceName);
-
         $stack = HandlerStack::create();
-        $stack->push(Middleware::log($psrLog, new MessageFormatter(MessageFormatter::DEBUG)));
+        $stack->push(Middleware::tap(function (Request $request, array &$options) {
+            $options['request_time_start'] = microtime(true);
+            $options['request_datetime_start'] = new \DateTime();
+        }, function (Request $request, array $options, PromiseInterface $response) use ($serviceName) {
+            $response->then(function ($response) use ($request, $options, $serviceName) {
+                $requestLog = new HttpRequestLog();
+                $requestLog->setService($serviceName);
+                $requestLog->setDateStarted($options['request_datetime_start']);
+                $requestLog->setDateCompleted(new \DateTime());
+                $requestLog->setRequestBody((string)$request->getBody());
+                $requestLog->setUri($request->getUri());
+                $requestLog->setRequestHeaders($request->getHeaders());
+                $requestLog->setResponseBody((string)$response->getBody());
+                $requestLog->setResponseCode($response->getStatusCode());
+                $requestLog->setResponseHeaders($response->getHeaders());
+                $requestLog->setTimeTaken(microtime(true) - $options['request_time_start']);
+                $this->repository->logHttpRequest($requestLog);
+            });
+        }));
 
         return new Client(['handler' => $stack]);
     }
