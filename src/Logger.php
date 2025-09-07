@@ -38,8 +38,11 @@ class Logger implements LoggerInterface
                 $requestLog->setService($serviceName);
                 $requestLog->setDateStarted($options['request_datetime_start']);
                 $requestLog->setDateCompleted(new \DateTime());
-                $requestLog->setRequestBody((string)$request->getBody());
+                if ($request->getBody()->getSize() > 0) {
+                    $requestLog->setRequestBody((string)$request->getBody());
+                }
                 $requestLog->setUri($request->getUri());
+                $requestLog->setMethod($request->getMethod());
                 $requestLog->setRequestHeaders($request->getHeaders());
                 $requestLog->setResponseBody((string)$response->getBody());
                 $requestLog->setResponseCode($response->getStatusCode());
