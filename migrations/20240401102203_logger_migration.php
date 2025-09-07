@@ -30,7 +30,8 @@ final class LoggerMigration extends AbstractMigration
             ->addColumn('response_headers', 'json', ['null' => true])
             ->addColumn('response_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, 'null' => true])
             ->addColumn('time_taken', 'float', ['null' => true])
-            ->addIndex('date')
+            ->addIndex('date_started')
+            ->addIndex('date_completed')
             ->addIndex('service')
             ->addIndex('response_code')
             ->create();
