@@ -25,7 +25,7 @@ final class LoggerMigration extends AbstractMigration
             ->addColumn('method', 'string', ['null' => true])
             ->addColumn('uri', 'string', ['null' => true])
             ->addColumn('request_headers', 'json', ['null' => true])
-            ->addColumn('request_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, null => true])
+            ->addColumn('request_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, 'null' => true])
             ->addColumn('response_code', 'integer', ['null' => true])
             ->addColumn('response_headers', 'json', ['null' => true])
             ->addColumn('response_body', 'text', ['length' => \Phinx\Db\Adapter\MysqlAdapter::TEXT_LONG, 'null' => true])
