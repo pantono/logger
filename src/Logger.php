@@ -44,7 +44,11 @@ class Logger implements LoggerInterface
                 $requestLog->setUri($request->getUri());
                 $requestLog->setMethod($request->getMethod());
                 $requestLog->setRequestHeaders($request->getHeaders());
-                $requestLog->setResponseBody((string)$response->getBody());
+                $body = $response->getBody();
+                if ($body->getSize() > 0) {
+                    $requestLog->setResponseBody($body->getContents());
+                    $response->getBody()->rewind();
+                }
                 $requestLog->setResponseCode($response->getStatusCode());
                 $requestLog->setResponseHeaders($response->getHeaders());
                 $requestLog->setTimeTaken(microtime(true) - $options['request_time_start']);
