@@ -86,6 +86,7 @@ class HttpRequestLog
         $this->uri = $uri;
     }
 
+    /** @return array<string, string|string[]> */
     public function getRequestHeaders(): array
     {
         return $this->requestHeaders;
@@ -116,6 +117,7 @@ class HttpRequestLog
         $this->responseCode = $responseCode;
     }
 
+    /** @return array<string, string|string[]> */
     public function getResponseHeaders(): array
     {
         return $this->responseHeaders;
