@@ -1,2 +1,4 @@
 Logger:
   class: Pantono\Logger\Logger
+AuditLogger:
+  class: Pantono\Logger\AuditLogger
