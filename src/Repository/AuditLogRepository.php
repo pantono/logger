@@ -31,7 +31,7 @@ class AuditLogRepository extends MysqlRepository
     public function getAuditLogByFilter(AuditLogFilter $filter): array
     {
         $select = $this->getDb()->select()->from('audit_log')
-            ->joinLeft('user', 'audit_log.user_id = user.id', ['user_name' => 'CONCAT(forename, \' \', surname)']);
+            ->joinLeft('user', 'audit_log.user_id = user.id', ['CONCAT(forename, \' \', surname) as user_name']);
 
         if ($filter->getDateFrom() !== null) {
             $select->where('date >= ?', $filter->getDateFrom()->format('Y-m-d H:i:s'));
