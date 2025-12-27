@@ -9,18 +9,22 @@ use Pantono\Logger\Model\AuditLog;
 use Pantono\Logger\Event\PreAuditLogSaveEvent;
 use Pantono\Logger\Event\PostAuditLogSaveEvent;
 use Pantono\Logger\Filter\AuditLogFilter;
+use Pantono\Contracts\Security\SecurityContextInterface;
+use Pantono\Contracts\Locator\UserInterface;
 
 class AuditLogger
 {
     private AuditLogRepository $repository;
     private Hydrator $hydrator;
     private EventDispatcher $dispatcher;
+    private SecurityContextInterface $securityContext;
 
-    public function __construct(AuditLogRepository $repository, Hydrator $hydrator, EventDispatcher $dispatcher)
+    public function __construct(AuditLogRepository $repository, Hydrator $hydrator, EventDispatcher $dispatcher, SecurityContextInterface $securityContext)
     {
         $this->repository = $repository;
         $this->hydrator = $hydrator;
         $this->dispatcher = $dispatcher;
+        $this->securityContext = $securityContext;
     }
 
     private function getAuditLogById(int $id): ?AuditLog
@@ -37,6 +41,17 @@ class AuditLogger
         $log->setEntry($entry);
         $log->setPreviousState($previousState);
         $log->setNewState($newState);
+        if ($this->securityContext->has('user')) {
+            /**
+             * @var UserInterface $user
+             */
+            $user = $this->securityContext->get('user');
+            $log->setUserId($user->getId());
+            $log->setUserName($user->getName());
+        } else {
+            $log->setUserId(1);
+            $log->setUserName('Unknown User');
+        }
 
         $this->saveAuditLog($log);
         return $log;
