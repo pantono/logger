@@ -11,6 +11,9 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Promise\PromiseInterface;
 use Pantono\Logger\Model\HttpRequestLog;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\HttpClient\HttpClient;
+use Pantono\Logger\HttpClient\LoggedHttpClient;
 
 class Logger implements LoggerInterface
 {
@@ -57,6 +60,11 @@ class Logger implements LoggerInterface
         }));
 
         return new Client(['handler' => $stack]);
+    }
+
+    public function createLoggedSymfonyHttpClient(string $serviceName, array $options = []): HttpClientInterface
+    {
+        return new LoggedHttpClient(HttpClient::create($options), $this->repository, $serviceName);
     }
 
     public function emergency(\Stringable|string $message, array $context = []): void
