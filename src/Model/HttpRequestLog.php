@@ -19,7 +19,7 @@ class HttpRequestLog
     #[Filter('json_decode')]
     private array $requestHeaders = [];
     private ?string $requestBody = null;
-    private int $responseCode;
+    private ?int $responseCode = null;
     /** @var array<string, string|string[]> */
     #[Filter('json_decode')]
     private array $responseHeaders = [];
@@ -107,12 +107,12 @@ class HttpRequestLog
         $this->requestBody = $requestBody;
     }
 
-    public function getResponseCode(): int
+    public function getResponseCode(): ?int
     {
         return $this->responseCode;
     }
 
-    public function setResponseCode(int $responseCode): void
+    public function setResponseCode(?int $responseCode): void
     {
         $this->responseCode = $responseCode;
     }
