@@ -39,6 +39,11 @@ class LoggedResponse implements ResponseInterface
         $this->startDate = $startDate;
     }
 
+    public function getResponse(): ResponseInterface
+    {
+        return $this->response;
+    }
+
     public function getStatusCode(): int
     {
         $statusCode = $this->response->getStatusCode();

@@ -32,6 +32,20 @@ class LoggedHttpClient implements HttpClientInterface
 
     public function stream(ResponseInterface|iterable $responses, ?float $timeout = null): ResponseStreamInterface
     {
+        if ($responses instanceof LoggedResponse) {
+            $responses = $responses->getResponse();
+        } elseif (is_iterable($responses)) {
+            $unwrappedResponses = function () use ($responses) {
+                foreach ($responses as $key => $response) {
+                    if ($response instanceof LoggedResponse) {
+                        yield $key => $response->getResponse();
+                    } else {
+                        yield $key => $response;
+                    }
+                }
+            };
+            $responses = $unwrappedResponses();
+        }
         return $this->client->stream($responses, $timeout);
     }
 
