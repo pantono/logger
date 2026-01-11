@@ -112,7 +112,9 @@ class LoggedResponse implements ResponseInterface
         try {
             $requestLog->setResponseCode($this->response->getStatusCode());
             $requestLog->setResponseHeaders($this->response->getHeaders(false));
-            $requestLog->setResponseBody($this->response->getContent(false));
+            if (($this->options['buffer'] ?? true) !== false) {
+                $requestLog->setResponseBody($this->response->getContent(false));
+            }
         } catch (\Exception $e) {
             // Log might be incomplete if response fails
         }
