@@ -2,10 +2,10 @@
 
 namespace Pantono\Logger\Repository;
 
-use Pantono\Database\Repository\MysqlRepository;
+use Pantono\Database\Repository\DefaultRepository;
 use Pantono\Logger\Model\HttpRequestLog;
 
-class LoggerRepository extends MysqlRepository
+class LoggerRepository extends DefaultRepository
 {
     public function logMessage(string $service, string $level, string $message, array $context = []): void
     {

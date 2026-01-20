@@ -2,11 +2,11 @@
 
 namespace Pantono\Logger\Repository;
 
-use Pantono\Database\Repository\MysqlRepository;
+use Pantono\Database\Repository\DefaultRepository;
 use Pantono\Logger\Model\AuditLog;
 use Pantono\Logger\Filter\AuditLogFilter;
 
-class AuditLogRepository extends MysqlRepository
+class AuditLogRepository extends DefaultRepository
 {
     /**
      * @return array<string,mixed>|null
