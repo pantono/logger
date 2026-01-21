@@ -34,7 +34,7 @@ class AuditLogRepository extends DefaultRepository
             ->joinLeft(
                 'user',
                 'audit_log.user_id = user.id',
-                ['CONCAT(' . $this->quoteColumn('user', 'forename'), ', \' \', ' . $this->quoteColumn('user', 'surname') . ') as user_name']
+                ['CONCAT(' . $this->quoteColumn('user', 'forename') . ', \' \', ' . $this->quoteColumn('user', 'surname') . ') as user_name']
             );
 
         if ($filter->getDateFrom() !== null) {
