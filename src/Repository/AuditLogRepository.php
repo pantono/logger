@@ -31,7 +31,11 @@ class AuditLogRepository extends DefaultRepository
     public function getAuditLogByFilter(AuditLogFilter $filter): array
     {
         $select = $this->getDb()->select()->from('audit_log')
-            ->joinLeft('user', 'audit_log.user_id = user.id', ['CONCAT(user.forename, \' \', user.surname) as user_name']);
+            ->joinLeft(
+                'user',
+                'audit_log.user_id = user.id',
+                ['CONCAT(' . $this->quoteColumn('user', 'forename'), ', \' \', ' . $this->quoteColumn('user', 'surname') . ') as user_name']
+            );
 
         if ($filter->getDateFrom() !== null) {
             $select->where('date >= ?', $filter->getDateFrom()->format('Y-m-d H:i:s'));
