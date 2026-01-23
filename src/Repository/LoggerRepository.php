@@ -22,8 +22,10 @@ class LoggerRepository extends DefaultRepository
     public function logHttpRequest(HttpRequestLog $log): void
     {
         $data = $log->getAllData();
-        if (StringUtilities::isBinary($data['response_body'])) {
-            $data['response_body'] = base64_encode($data['response_body']);
+        if ($data['response_body']) {
+            if (StringUtilities::isBinary($data['response_body'])) {
+                $data['response_body'] = base64_encode($data['response_body']);
+            }
         }
         $id = $this->insertOrUpdateCheck('http_log', 'id', $log->getId(), $data);
         if ($id) {
