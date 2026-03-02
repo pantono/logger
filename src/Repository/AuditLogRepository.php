@@ -30,31 +30,32 @@ class AuditLogRepository extends DefaultRepository
      */
     public function getAuditLogByFilter(AuditLogFilter $filter): array
     {
-        $select = $this->getDb()->select()->from('audit_log')
-            ->joinLeft(
-                'user',
-                'audit_log.user_id = user.id',
-                [$this->concat(['user.forename', ' ', 'user.surname'], 'user_name')]
-            );
+        $select = $this->getDb()->select('l.*', "CONCAT(u.forename, ' ', u.surname) AS user_name")->from('audit_log', 'l')
+            ->leftJoin('l', 'user', 'u', 'u.id=l.user_id');
 
         if ($filter->getDateFrom() !== null) {
-            $select->where('date >= ?', $filter->getDateFrom()->format('Y-m-d H:i:s'));
+            $select->where('l.date >= :date_from')
+                ->setParameter('date_from', $filter->getDateFrom()->format('Y-m-d H:i:s'));
         }
         if ($filter->getDateTo() !== null) {
-            $select->where('date <= ?', $filter->getDateFrom()->format('Y-m-d H:i:s'));
+            $select->where('l.date <= :date_to')
+                ->setParameter('date_to', $filter->getDateTo()->format('Y-m-d H:i:s'));
         }
 
         if ($filter->getModel() !== null) {
-            $select->where('model = ?', $filter->getModel());
+            $select->where('l.model = :model')
+                ->setParameter('model', $filter->getModel());
         }
         if ($filter->getModelId() !== null) {
-            $select->where('model_id = ?', $filter->getModelId());
+            $select->where('l.model_id = :model_id')
+                ->setParameter('model_id', $filter->getModelId());
         }
         if ($filter->getUserId() !== null) {
-            $select->where('user_id=?', $filter->getUserId());
+            $select->where('l.user_id=:user_id')
+                ->setParameter('user_id', $filter->getUserId());
         }
-        $filter->setTotalResults($this->getCount($select));
-        $select->limitPage($filter->getPage(), $filter->getPerPage());
-        return $this->fetchAll($select);
+        $this->applyCountAndLimit($select, $filter);
+
+        return $this->getDb()->fetchAll($select);
     }
 }
