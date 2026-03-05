@@ -1,12 +1,12 @@
 <?php
 
-namespace Pantono\Logger;
+namespace Pantono\Logger\Logger;
 
 use Psr\Log\LoggerInterface;
 use Pantono\Logger\Repository\LoggerRepository;
 use Stringable;
 
-class LoggerInstance implements LoggerInterface
+class DatabaseLoggerInstance implements LoggerInterface
 {
     private LoggerRepository $repository;
     private string $serviceName;

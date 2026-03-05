@@ -9,7 +9,7 @@ use Pantono\Logger\Filter\AuditLogFilter;
 class AuditLogRepository extends DefaultRepository
 {
     /**
-     * @return array<string,mixed>|null
+     * @return array<mixed>|null
      */
     public function getLogById(int $id): ?array
     {

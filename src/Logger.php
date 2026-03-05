@@ -7,13 +7,14 @@ use Psr\Log\LoggerInterface;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
-use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Promise\PromiseInterface;
 use Pantono\Logger\Model\HttpRequestLog;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Pantono\Logger\HttpClient\LoggedHttpClient;
+use Pantono\Logger\Logger\DatabaseLoggerInstance;
+use Pantono\Logger\Logger\FileLoggerInstance;
 
 class Logger implements LoggerInterface
 {
@@ -24,9 +25,14 @@ class Logger implements LoggerInterface
         $this->repository = $repository;
     }
 
-    public function createLogger(string $serviceName): LoggerInstance
+    public function createDatabaseLogger(string $serviceName): DatabaseLoggerInstance
     {
-        return new LoggerInstance($this->repository, $serviceName);
+        return new DatabaseLoggerInstance($this->repository, $serviceName);
+    }
+
+    public function createFileLogger(string $serviceName, string $directory, string $filePath): FileLoggerInstance
+    {
+        return new FileLoggerInstance($serviceName, $directory, $filePath);
     }
 
     public function createLoggedHttpClient(string $serviceName): Client
