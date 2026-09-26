@@ -11,6 +11,7 @@ use Pantono\Logger\Event\PostAuditLogSaveEvent;
 use Pantono\Logger\Filter\AuditLogFilter;
 use Pantono\Contracts\Security\SecurityContextInterface;
 use Pantono\Contracts\Locator\UserInterface;
+use Pantono\Contracts\Application\Proxy\ProxyInterface;
 
 class AuditLogger
 {
@@ -61,7 +62,7 @@ class AuditLogger
     {
         // Handle deletes
         if ($currentModel === null && $previousModel !== null) {
-            $modelClass = get_class($previousModel);
+            $modelClass = $this->getModelName($previousModel);
             $modelId = $this->getModelId($previousModel);
             $prev = $this->normalizeModel($previousModel);
             return $this->addLogForModel($modelClass, $modelId, 'Deleted', $prev, null);
@@ -69,7 +70,7 @@ class AuditLogger
 
         // Handle creates
         if ($currentModel !== null && $previousModel === null) {
-            $modelClass = get_class($currentModel);
+            $modelClass = $this->getModelName($currentModel);
             $modelId = $this->getModelId($currentModel);
             $new = $this->normalizeModel($currentModel);
             return $this->addLogForModel($modelClass, $modelId, 'Created', null, $new);
@@ -240,5 +241,14 @@ class AuditLogger
         $event->setCurrent($log);
         $event->setPrevious($previous);
         $this->dispatcher->dispatch($event);
+    }
+
+    private function getModelName(object $model): string
+    {
+        $reflection = new \ReflectionClass($model);
+        if (in_array(ProxyInterface::class, $reflection->getInterfaceNames())) {
+            return $reflection->getParentClass()->getName();
+        }
+        return $reflection->getName();
     }
 }
