@@ -34,24 +34,24 @@ class AuditLogRepository extends DefaultRepository
             ->leftJoin('l', $this->quoteTable('user'), 'u', 'u.id=l.user_id');
 
         if ($filter->getDateFrom() !== null) {
-            $select->where('l.date >= :date_from')
+            $select->andWhere('l.date >= :date_from')
                 ->setParameter('date_from', $filter->getDateFrom()->format('Y-m-d H:i:s'));
         }
         if ($filter->getDateTo() !== null) {
-            $select->where('l.date <= :date_to')
+            $select->andWhere('l.date <= :date_to')
                 ->setParameter('date_to', $filter->getDateTo()->format('Y-m-d H:i:s'));
         }
 
         if ($filter->getModel() !== null) {
-            $select->where('l.model = :model')
+            $select->andWhere('l.model = :model')
                 ->setParameter('model', $filter->getModel());
         }
         if ($filter->getModelId() !== null) {
-            $select->where('l.model_id = :model_id')
+            $select->andWhere('l.model_id = :model_id')
                 ->setParameter('model_id', $filter->getModelId());
         }
         if ($filter->getUserId() !== null) {
-            $select->where('l.user_id=:user_id')
+            $select->andWhere('l.user_id=:user_id')
                 ->setParameter('user_id', $filter->getUserId());
         }
         $this->applyCountAndLimit($select, $filter);
