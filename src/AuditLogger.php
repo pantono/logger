@@ -81,8 +81,10 @@ class AuditLogger
             return null;
         }
 
+        $previousClassName = $this->getModelName($previousModel);
+        $currentClassName = $this->getModelName($currentModel);
         // Both present: update
-        if (get_class($currentModel) !== get_class($previousModel)) {
+        if ($currentClassName !== $previousClassName) {
             throw new \InvalidArgumentException('autoLog requires both models to be of the same type');
         }
 
@@ -96,10 +98,9 @@ class AuditLogger
             return null;
         }
 
-        $modelClass = get_class($currentModel);
         $modelId = $this->getModelId($currentModel);
 
-        return $this->addLogForModel($modelClass, $modelId, 'Updated', $prevDiff, $newDiff);
+        return $this->addLogForModel($currentClassName, $modelId, 'Updated', $prevDiff, $newDiff);
     }
 
     /**
